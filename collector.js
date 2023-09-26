@@ -15,7 +15,7 @@ export default class GitHubCollector {
         },
       });
       const rateLimit = response.data.rate;
-      
+
       return rateLimit;
     } catch (error) {
       throw new Error(`Error checking rate limit: ${error.message}`);
@@ -29,25 +29,23 @@ export default class GitHubCollector {
       let page = 1;
       let repositories = [];
       let totalCount = 0;
-      let xRateLimitRemaining = 5000;
+      
       const rateLimit = await this.checkRateLimit();
-      
-      
-      if (rateLimit.remaining === 0) {
-         const resetTime = new Date(rateLimit.reset * 1000);
-        const now = new Date();
-        const waitTime = resetTime - now;
-        
-        console.log(`Rate limit exceeded. Waiting for ${waitTime / 1000} seconds...`);
-        await new Promise(resolve => setTimeout(resolve, waitTime));
-        
-      }      
+      let rateLimitRemaining = rateLimit.remaining;
 
-      while (xRateLimitRemaining >= 0  && xRateLimitRemaining <= 5000 ) {
+
+
+      while (rateLimitRemaining >= 0) {
 
         if (rateLimit.remaining === 0) {
-          xRateLimitRemaining = await this.checkRateLimit();
+          const resetTime = new Date(rateLimit.reset * 1000);
+          const now = new Date();
+          const waitTime = resetTime - now;
+
+          console.log(`Rate limit exceeded. Waiting for ${waitTime / 1000} seconds...`);
+          await new Promise(resolve => setTimeout(resolve, waitTime));
         }
+
         const response = await axios.get(`${this.baseURL}/orgs/${this.organization}/repos`, {
           params: {
             page,
@@ -59,9 +57,9 @@ export default class GitHubCollector {
         });
 
         const pageRepositories = response.data;
-        
-        xRateLimitRemaining = response.headers['x-ratelimit-remaining'];
-        console.log(`xHeader Rate limit: ${xRateLimitRemaining} remaining.`);
+
+        rateLimitRemaining = response.headers['x-ratelimit-remaining'];
+        console.log(`xHeader Rate limit: ${rateLimitRemaining} remaining.`);
 
         repositories = repositories.concat(pageRepositories);
         console.log(`Retrieved ${pageRepositories.length} repositories.`);
@@ -77,7 +75,7 @@ export default class GitHubCollector {
           console.log(`Only fetching first 10 pages.`);
           break;
         }
-        
+
       }
 
       totalCount = repositories.length;
