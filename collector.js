@@ -1,4 +1,5 @@
 import axios from "axios";
+import Repository from './entities.js/';
 
 export default class GitHubCollector {
   constructor(baseURL, token, organization) {
@@ -70,8 +71,8 @@ export default class GitHubCollector {
         }
 
         page++;
-        if (page > 10) {
-          // Only fetch first 10 pages
+        if (page > 5) {
+          // Only fetch first 5 pages
           console.log(`Only fetching first 10 pages.`);
           break;
         }
@@ -93,6 +94,10 @@ export default class GitHubCollector {
       for (const repo of repositories) {
         console.log(`Repository Name: ${repo.name}`);
         // Add your custom logic here for each repository
+        const repository = new Repository(repo.id, repo.name, repo.topics);
+       
+        console.log(JSON.stringify(repository, null, 2));
+
       }
     } catch (error) {
       console.error(error.message);

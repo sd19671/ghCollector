@@ -1,24 +1,31 @@
-export class Repository {
-  constructor(name, description, owner, appId) {
+export default class Repository {
+  constructor(repoId, name, topics) {
+    this.repoId = repoId;
     this.name = name;
-    this.description = description;
-    this.owner = owner;
-    this.appId = appId;
+    this.topics = topics;
   }
 }
 
-export class Rules {
-  constructor(name, description, appId) {
-    this.name = name;
-    this.description = description;
-    this.appId = appId;
-  }
-}
+// class Rules {
+//   constructor(name, description, appId) {
+//     this.name = name;
+//     this.description = description;
+//     this.appId = appId;
+//   }
+// }
 
-export class RulesTemplate {
-  constructor(name, description, rules) {
-    this.name = name;
-    this.description = description;
-    this.rules = rules;
-  }
-}
+// class RulesTemplate {
+//   constructor(name, description, rules) {
+//     this.name = name;
+//     this.description = description;
+//     this.rules = rules;
+//   }
+// }
+
+// class Result {
+//   constructor(rule, status, reason = null ) {
+//     this.rule = rule;
+//     this.status = status;
+//     this.reason = reason;
+//   }
+// }
